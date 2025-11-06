@@ -1,0 +1,24 @@
+﻿@using System.Globalization
+@model List<Producto>
+@{
+    ViewData["Title"] = "Lista Productos";
+}
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Precio</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var p in Model)
+        {
+            <tr>
+                <td>@p.Descripcion</td>
+                <td>@p.Precio.ToString("C",new CultureInfo("es-AR"))</td>
+            </tr>
+        }
+    </tbody>
+</table>

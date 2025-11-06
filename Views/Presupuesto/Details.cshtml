@@ -1,0 +1,36 @@
+@using System.Globalization
+@model Presupuesto
+@{
+    ViewData["Title"] = "Detalles Presupuesto ";
+} 
+
+
+@if (ViewBag.Mensaje != null)
+{
+    <p>@ViewBag.Mensaje</p>
+}
+
+<h2>Presupuesto: @Model.NombreDestinatario</h2>
+
+@if (Model != null)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Precio</th>
+                <th>Cantidad</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var pd in Model.ListaDetalle)
+            {
+                <tr>
+                    <td>@pd.TipoProducto.Descripcion</td>
+                    <td>@pd.TipoProducto.Precio.ToString("C", new CultureInfo("es-AR"))</td>
+                    <td>@pd.Cantidad</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
