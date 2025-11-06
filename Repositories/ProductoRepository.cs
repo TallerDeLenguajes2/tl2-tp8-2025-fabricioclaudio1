@@ -2,7 +2,7 @@ using System.ComponentModel;
 using Microsoft.Data.Sqlite;
 public class ProductoRepository : IProductoRepository
 {
-    string cadenaConexion = "Data Source=Tienda.db";
+    readonly string cadenaConexion = "Data Source=Tienda.db";
 
     public bool Crear(Producto producto)
     {
@@ -19,69 +19,76 @@ public class ProductoRepository : IProductoRepository
     public List<Producto> Listar()
     {
         List<Producto> productos = new List<Producto>();
-        string queryString = "SELECT Descripcion, PrecioNumerico FROM Productos";
-        
+        string queryString = "SELECT IdProducto, Descripcion, PrecioNumerico FROM Productos";
         using SqliteConnection connection = new SqliteConnection(cadenaConexion);
         SqliteCommand command = new SqliteCommand(queryString, connection);
-        connection.Open();
-        using (SqliteDataReader reader = command.ExecuteReader())
-        {
-            while (reader.Read()) // si encontró un registro
-            {
-                var producto = new Producto
-                {
-                    Descripcion = reader.GetString(0),
-                    Precio = reader.GetInt32(1),
-                };
-                productos.Add(producto);
-            }
-            connection.Close();
-        }
 
-        return productos;
-    }
-    public Producto ObtenerID(int id)
-    {
-        string sql = "SELECT nombre, dni, telefono FROM Paciente WHERE Id = @Id";
-        
-        using SqliteConnection conexion = new SqliteConnection(cadenaConexion);
-        conexion.Open();
-        using var comando = new SqliteCommand(sql, conexion);
-        comando.Parameters.Add(new SqliteParameter("@Id", id));
-        using var reader = comando.ExecuteReader();
-        if (reader.Read()) // si encontró un registro
+        connection.Open();
+        using SqliteDataReader reader = command.ExecuteReader();
+        while (reader.Read()) // si encontró un registro
         {
-            var paciente = new Producto
+            var producto = new Producto
             {
                 IdProducto = reader.GetInt32(0),
                 Descripcion = reader.GetString(1),
                 Precio = reader.GetInt32(2),
             };
-            return paciente;
+            productos.Add(producto);
         }
+        connection.Close();
+
+
+        return productos;
+    }
+    public Producto? ObtenerID(int id)
+    {
+        string sql = "SELECT IdProducto, Descripcion, PrecioNumerico FROM Productos WHERE Id = @Id";
+        using SqliteConnection conexion = new SqliteConnection(cadenaConexion);
+        using var comando = new SqliteCommand(sql, conexion);
+        comando.Parameters.Add(new SqliteParameter("@Id", id));
+
+        conexion.Open();
+        using var reader = comando.ExecuteReader();
+        if (reader.Read()) // si encontró un registro
+        {
+            var producto = new Producto
+            {
+                IdProducto = reader.GetInt32(0),
+                Descripcion = reader.GetString(1),
+                Precio = reader.GetInt32(2),
+            };
+            return producto;
+        }
+        conexion.Close();
+
         return null;
     }
     public bool Modificar(int id, Producto producto)
     {
         using var conexion = new SqliteConnection(cadenaConexion);
-        conexion.Open();
-        string sql = "UPDATE Producto SET Precio = @Precio WHERE Id = @Id";
+        string sql = "UPDATE Productos SET PrecioNumerico = @Precio WHERE Id = @Id";
         using var comando = new SqliteCommand(sql, conexion);
         comando.Parameters.Add(new SqliteParameter("@Precio", producto.Precio));
         comando.Parameters.Add(new SqliteParameter("@Id", id));
+
+        conexion.Open();
         comando.ExecuteNonQuery();
+        conexion.Close();
 
         return true;
     }
     public bool EliminarID(int id)
     {
         using var conexion = new SqliteConnection(cadenaConexion);
-        conexion.Open();
-        string sql = "DELETE FROM Producto WHERE Id = @Id";
+        
+        string sql = "DELETE FROM Productos WHERE Id = @Id";
         using var comando = new SqliteCommand(sql, conexion);
         comando.Parameters.Add(new SqliteParameter("@Id", id));
-        comando.ExecuteNonQuery();
 
+        conexion.Open();
+        comando.ExecuteNonQuery();
+        conexion.Close();
+        
         return true;
     }
 

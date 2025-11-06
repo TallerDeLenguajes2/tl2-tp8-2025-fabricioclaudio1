@@ -8,7 +8,7 @@ public class PresupuestoRepository
     {
         using var conexion = new SqliteConnection(cadenaConexion);
         conexion.Open();
-        string sql = "INSERT INTO Presupuesto (NombreDestinatario) VALUES(@nombreDestinario)";
+        string sql = "INSERT INTO Presupuesto (NombreDestinario) VALUES(@nombreDestinario)";
         using var comando = new SqliteCommand(sql, conexion);
         comando.Parameters.Add(new SqliteParameter("@nombreDestinario", presupuesto.NombreDestinatario));
         comando.ExecuteNonQuery();
@@ -18,7 +18,7 @@ public class PresupuestoRepository
     public List<Presupuesto> Listar()
     {
         List<Presupuesto> presupuestos = new();
-        string queryString = "SELECT * FROM Productos;";
+        string queryString = "SELECT * FROM Productos";
         using (SqliteConnection connection = new SqliteConnection(cadenaConexion))
         {
             SqliteCommand command = new SqliteCommand(queryString, connection);
@@ -40,7 +40,7 @@ public class PresupuestoRepository
             return presupuestos;
         }
     }
-    public Presupuesto ObtenerSegunID(int id)
+    public Presupuesto? ObtenerSegunID(int id)
     {
         using var conexion = new SqliteConnection(cadenaConexion);
         conexion.Open();
@@ -93,9 +93,9 @@ public class PresupuestoRepository
     {
         using var conexion = new SqliteConnection(cadenaConexion);
         conexion.Open();
-        string sql = "UPDATE Producto SET NombreDestinatario = @NombreDestinatario WHERE Id = @Id";
+        string sql = "UPDATE Productos SET NombreDestinario = @NombreDestinario WHERE Id = @Id";
         using var comando = new SqliteCommand(sql, conexion);
-        comando.Parameters.Add(new SqliteParameter("@NombreDestinatario", presupuesto.NombreDestinatario));
+        comando.Parameters.Add(new SqliteParameter("@NombreDestinario", presupuesto.NombreDestinatario));
         comando.Parameters.Add(new SqliteParameter("@Id", id));
         comando.ExecuteNonQuery();
 
