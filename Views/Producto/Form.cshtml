@@ -1,0 +1,27 @@
+@model Producto
+
+<h2>@(Model?.IdProducto == 0 ? "Crear producto" : "Editar producto")</h2>
+
+<form asp-action="@(Model?.IdProducto == 0 ? "Create" : "Edit")" method="post">
+    <input type="hidden" asp-for="IdProducto" />
+
+    <div class="mb-3">
+        <input type="text" asp-for="Descripcion" class="form-control" placeholder="Descripcion"
+            aria-label="Descripcion">
+    </div>
+
+    <div class="input-group mb-3">
+        <span class="input-group-text">$</span>
+        <input type="number" asp-for="Precio" class="form-control" aria-label="Amount (to the nearest dollar)">
+    </div>
+
+    <button type="submit" class="btn btn-warning">
+        @(Model?.IdProducto == 0 ? "Guardar" : "Actualizar")
+    </button>
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

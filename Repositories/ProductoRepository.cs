@@ -42,7 +42,7 @@ public class ProductoRepository : IProductoRepository
     }
     public Producto? ObtenerID(int id)
     {
-        string sql = "SELECT IdProducto, Descripcion, PrecioNumerico FROM Productos WHERE Id = @Id";
+        string sql = "SELECT IdProducto, Descripcion, PrecioNumerico FROM Productos WHERE IdProducto = @Id";
         using SqliteConnection conexion = new SqliteConnection(cadenaConexion);
         using var comando = new SqliteCommand(sql, conexion);
         comando.Parameters.Add(new SqliteParameter("@Id", id));
@@ -66,8 +66,9 @@ public class ProductoRepository : IProductoRepository
     public bool Modificar(int id, Producto producto)
     {
         using var conexion = new SqliteConnection(cadenaConexion);
-        string sql = "UPDATE Productos SET PrecioNumerico = @Precio WHERE Id = @Id";
+        string sql = "UPDATE Productos SET Descripcion = @Descripcion, PrecioNumerico = @Precio WHERE IdProducto = @Id";
         using var comando = new SqliteCommand(sql, conexion);
+        comando.Parameters.Add(new SqliteParameter("@Descripcion", producto.Descripcion));
         comando.Parameters.Add(new SqliteParameter("@Precio", producto.Precio));
         comando.Parameters.Add(new SqliteParameter("@Id", id));
 
@@ -81,7 +82,7 @@ public class ProductoRepository : IProductoRepository
     {
         using var conexion = new SqliteConnection(cadenaConexion);
         
-        string sql = "DELETE FROM Productos WHERE Id = @Id";
+        string sql = "DELETE FROM Productos WHERE IdProducto = @Id";
         using var comando = new SqliteCommand(sql, conexion);
         comando.Parameters.Add(new SqliteParameter("@Id", id));
 

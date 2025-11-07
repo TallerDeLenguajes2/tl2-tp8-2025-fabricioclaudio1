@@ -13,31 +13,74 @@ public class PresupuestoController : Controller
         _prep = new PresupuestoRepository();
     }
 
-    public IActionResult Index()
+    //Metodos
+    public IActionResult List()
     {
         List<Presupuesto> presupuestos = _prep.Listar();
         return View(presupuestos);
     }
 
-    public IActionResult BusquedaPorId()
-    {
-        return View();
-    }
-   
     public IActionResult Details(int id)
     {
-        Presupuesto presupuestos = _prep.ObtenerSegunID(id);
-        if (presupuestos == null)
+        Presupuesto? presupuesto = _prep.ObtenerSegunID(id);
+        if (presupuesto == null)
         {
             ViewBag.Mensaje = "Presupuesto no encontrado.";
             return View();
         }
-        return View(presupuestos);
+        return View(presupuesto);
     }
 
+    [HttpGet]
+    public IActionResult Create()
+    {
+        Presupuesto presupuesto = new Presupuesto { IdPresupuesto = 0 };
+        return View("Form", presupuesto);
+    }
 
+    [HttpPost]
+    public IActionResult Create(Presupuesto presupuesto)
+    {
+        if (!ModelState.IsValid)
+            return View("Form", presupuesto);
 
+        _prep.Crear(presupuesto);
 
+        return RedirectToAction("List");
+    }
+
+    [HttpGet]
+    public IActionResult Edit(int id)
+    {
+        var presupuesto = _prep.ObtenerSegunID(id);
+        if (presupuesto == null)
+            return NotFound();
+        return View("Form", presupuesto);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult Edit(Presupuesto presupuesto)
+    {
+        if (!ModelState.IsValid)
+            return View(presupuesto);
+        
+        // Opcional: verificar que exista
+        var existing = _prep.ObtenerSegunID(presupuesto.IdPresupuesto);
+        if (existing == null) return NotFound();
+
+        _prep.Modificar(existing.IdPresupuesto, presupuesto);
+
+        return RedirectToAction("List");
+    }
+    //
+    [HttpPost]
+    public IActionResult Delete(int id)
+    {
+        _prep.EliminarID(id);
+
+        return RedirectToAction("List");
+    }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()

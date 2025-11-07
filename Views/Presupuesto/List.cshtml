@@ -1,0 +1,74 @@
+﻿@using System.Globalization
+@model IEnumerable<Presupuesto>
+@{
+    ViewData["Title"] = "Lista Presupuesto ";
+}
+
+@if (ViewBag.Mensaje != null)
+{
+    <p>@ViewBag.Mensaje</p>
+}
+
+<h2>Lista de Presupuestos</h2>
+<br>
+<a asp-controller="Presupuesto" asp-action="Create" class="btn btn-success">Nuevo Presupuesto</a>
+
+@if (Model != null)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nombre Destinario</th>
+                <th>Fecha Creacion</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var p in Model)
+            {
+                <tr>
+                    <td>@p.NombreDestinario</td>
+                    <td>@p.FechaCreacion
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a class="btn btn-info btn-sm" asp-route-id="@p.IdPresupuesto" asp-controller="Presupuesto"
+                                asp-action="Details" type="button">Detalles</a>
+
+                            <a class="btn btn-primary btn-sm" asp-route-id="@p.IdPresupuesto" asp-controller="Presupuesto"
+                                asp-action="Edit" type="button">Editar</a>
+
+                            <!-- Botón que abre el modal -->
+                            <a class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#modal-@p.IdPresupuesto">
+                                Eliminar
+                            </a>
+
+                            <!-- Modal -->
+                            <div class="modal fade" id="modal-@p.IdPresupuesto" tabindex="-1"
+                                aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">¿Desea eliminar @p.NombreDestinario?</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Cerrar"></button>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary"
+                                                data-bs-dismiss="modal">Cancelar</button>
+
+                                            <form asp-controller="Presupuesto" asp-action="Delete" method="post">
+                                                <input type="hidden" name="id" value="@p.IdPresupuesto" />
+                                                <button type="submit" class="btn btn-danger">Aceptar</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

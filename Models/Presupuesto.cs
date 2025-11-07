@@ -1,7 +1,7 @@
 public class Presupuesto
 {
     public int IdPresupuesto { get; set; }
-    public string? NombreDestinatario { get; set; }
+    public string? NombreDestinario { get; set; }
     public DateTime? FechaCreacion { get; set; }
     public List<PresupuestoDetalle> ListaDetalle { get; set; } = new List<PresupuestoDetalle>();
     // Producto  Cantidad
