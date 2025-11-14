@@ -1,3 +1,6 @@
+
+namespace MVC.Models;
+
 public class PresupuestoDetalle
 {
     public Producto TipoProducto { get; set; } = new Producto();

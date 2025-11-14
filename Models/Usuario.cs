@@ -1,3 +1,6 @@
+namespace MVC.Models;
+
+
 public class Usuario
 {
     public int Id { get; set; }

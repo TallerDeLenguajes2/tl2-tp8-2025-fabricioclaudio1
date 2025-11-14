@@ -2,47 +2,73 @@ using System.Reflection.Metadata.Ecma335;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
 using MVC.Repositories;
+using MVC.Interfaces;
+
 
 namespace MVC.Services;
 public class AuthenticationService : IAuthenticationService
 {
-    private readonly UsuarioRepository _repoUsuario;
-
-    public AuthenticationService()
+    private readonly IUsuarioRepository _userRepository;
+    private readonly IHttpContextAccessor _httpContextAccessor;
+    //private readonly HttpContext context;
+    public AuthenticationService(IUsuarioRepository userRepository,
+       IHttpContextAccessor httpContextAccessor)
     {
-        _repoUsuario = new();
+        _userRepository = userRepository;
+        _httpContextAccessor = httpContextAccessor;
+        // context = _httpContextAccessor.HttpContext;
     }
-
     public bool Login(string username, string password)
     {
-        Usuario usu = _repoUsuario.GetUser(username, password);
-
-        if (usu != null)
+        var context = _httpContextAccessor.HttpContext;
+        var user = _userRepository.GetUser(username, password);
+        if (user != null)
         {
+            if (context == null)
+            {
+                throw new InvalidOperationException("HttpContext no está disponible.");
+            }
+            context.Session.SetString("IsAuthenticated", "true");
+            context.Session.SetString("User", user.User);
+            context.Session.SetString("UserNombre", user.Nombre);
+            context.Session.SetString("Rol", user.Rol);
+            //es el tipo de acceso/rol admin o cliente
             return true;
         }
-
         return false;
+
     }
     public void Logout()
     {
-        throw new NotImplementedException();
+        var context = _httpContextAccessor.HttpContext;
+        if (context == null)
+        {
+            throw new InvalidOperationException("HttpContext no está disponible.");
+        }
+        /* context.Session.Remove("IsAuthenticated");
+        context.Session.Remove("User");
+        context.Session.Remove("UserNombre");
+        context.Session.Remove("Rol");
+        */
+        context.Session.Clear();
     }
     public bool IsAuthenticated()
     {
-        throw new NotImplementedException();
+        var context = _httpContextAccessor.HttpContext;
+        if (context == null)
+        {
+            throw new InvalidOperationException("HttpContext no está disponible.");
+        }
+        return context.Session.GetString("IsAuthenticated") == "true";
     }
-
-    // Verifica si el usuario actual tiene el rol requerido (ej. "Administrador").
     public bool HasAccessLevel(string requiredAccessLevel)
     {
-        //Usuario usu = _repoUsuario.GetUser(username, password);
-        if (requiredAccessLevel != "Aqui se utiliza una cookie supuestamente")
+        var context = _httpContextAccessor.HttpContext;
+        if (context == null)
         {
-            return true;
+            throw new InvalidOperationException("HttpContext no está disponible.");
         }
-        return false;
+        return context.Session.GetString("Rol") == requiredAccessLevel;
     }
-
-
 }
+

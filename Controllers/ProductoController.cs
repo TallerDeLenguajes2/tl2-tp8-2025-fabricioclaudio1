@@ -1,16 +1,21 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using tl2_tp8_2025_fabricioclaudio1.Models;
+using MVC.Repositories;
+using MVC.Models;
+using MVC.ViewModels;
 
-namespace tl2_tp8_2025_fabricioclaudio1.Controllers;
+
+namespace MVC.Controllers;
 
 public class ProductoController : Controller
 {
     private readonly ProductoRepository _prod;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public ProductoController()
+    public ProductoController(ProductoRepository prod, IHttpContextAccessor httpContextAccessor)
     {
-        _prod = new ProductoRepository();
+        _prod = prod;
+        _httpContextAccessor = httpContextAccessor;
     }
 
     [HttpGet]

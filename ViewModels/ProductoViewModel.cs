@@ -1,5 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 
+namespace MVC.ViewModels;
+
 public class ProductoViewModel
 {
     public int IdProducto { get; set; }

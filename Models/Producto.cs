@@ -1,3 +1,5 @@
+namespace MVC.Models;
+
 public class Producto
 {
     public int IdProducto { get; set; }

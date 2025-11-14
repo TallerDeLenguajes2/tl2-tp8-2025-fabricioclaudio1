@@ -1,4 +1,7 @@
 using System.ComponentModel.DataAnnotations;
+using MVC.Models;
+
+namespace MVC.ViewModels;
 
 public class PresupuestoViewModel
 {

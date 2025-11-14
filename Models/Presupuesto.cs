@@ -1,3 +1,5 @@
+
+namespace MVC.Models;
 public class Presupuesto
 {
     public int IdPresupuesto { get; set; }

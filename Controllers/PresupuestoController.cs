@@ -4,18 +4,22 @@ using System.Diagnostics;
 using System.Runtime.Serialization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualBasic;
-using tl2_tp8_2025_fabricioclaudio1.Models;
+using MVC.Models;
 using MVC.Repositories;
+using MVC.ViewModels;
 
-namespace tl2_tp8_2025_fabricioclaudio1.Controllers;
+namespace MVC.Controllers;
 
 public class PresupuestoController : Controller
 {
     private readonly PresupuestoRepository _prep;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public PresupuestoController()
+
+    public PresupuestoController(PresupuestoRepository prep ,IHttpContextAccessor httpContextAccessor)
     {
-        _prep = new PresupuestoRepository();
+        _prep = prep;
+        _httpContextAccessor = httpContextAccessor;
     }
 
     //Metodos
@@ -34,7 +38,7 @@ public class PresupuestoController : Controller
                 ListaDetalle = pre.ListaDetalle,
             };
 
-    
+
 
             presupuestosVM.Add(presupuestoVM);
         }
@@ -133,7 +137,7 @@ public class PresupuestoController : Controller
         {
             return NotFound();
         }
-        
+
         _prep.EliminarID(id);
 
         return RedirectToAction("List");
