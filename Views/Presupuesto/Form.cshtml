@@ -1,4 +1,4 @@
-@model Presupuesto
+@model PresupuestoViewModel
 
 <h2>@(Model?.IdPresupuesto == 0 ? "Crear Presupuesto" : "Editar Presupuesto")</h2>
 
@@ -8,6 +8,7 @@
     <div class="mb-3">
         <input type="text" asp-for="NombreDestinario" class="form-control" placeholder="NombreDestinario"
             aria-label="Descripcion">
+        <span asp-validation-for="NombreDestinario" class= "text-danger"></span>
     </div>
 
     <button type="submit" class="btn btn-warning">
@@ -15,8 +16,4 @@
     </button>
 </form>
 
-@section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
-}
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

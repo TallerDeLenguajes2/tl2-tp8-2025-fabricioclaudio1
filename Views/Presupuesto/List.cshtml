@@ -1,5 +1,5 @@
 ﻿@using System.Globalization
-@model IEnumerable<Presupuesto>
+@model IEnumerable<PresupuestoViewModel>
 @{
     ViewData["Title"] = "Lista Presupuesto ";
 }
@@ -20,6 +20,7 @@
             <tr>
                 <th>Nombre Destinario</th>
                 <th>Fecha Creacion</th>
+                <th>Acciones</th>
             </tr>
         </thead>
         <tbody>
@@ -27,9 +28,10 @@
             {
                 <tr>
                     <td>@p.NombreDestinario</td>
-                    <td>@p.FechaCreacion
+                    <td>@p.FechaCreacion</td>
 
-                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <td>
+                        <div @*class="d-grid gap-2 d-md-flex"*@ >
                             <a class="btn btn-info btn-sm" asp-route-id="@p.IdPresupuesto" asp-controller="Presupuesto"
                                 asp-action="Details" type="button">Detalles</a>
 
@@ -65,7 +67,6 @@
                             </div>
 
                         </div>
-
                     </td>
                 </tr>
             }

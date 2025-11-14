@@ -47,7 +47,7 @@ public class PresupuestoRepository
         conexion.Open();
         string sql = @"
         SELECT 
-            pres.NombreDestinario, 
+            pres.IdPresupuesto, pres.NombreDestinario, 
             pd.Cantidad, 
             prod.IdProducto, prod.Descripcion, prod.PrecioNumerico
         FROM Presupuesto pres
@@ -69,20 +69,21 @@ public class PresupuestoRepository
         {
             presupuesto ??= new Presupuesto
             {
-                NombreDestinario = reader.GetString(0)
+                IdPresupuesto = reader.GetInt32(0),
+                NombreDestinario = reader.GetString(1)
             };
 
             prod = new Producto
             {
-                IdProducto = reader.GetInt32(2),
-                Descripcion = reader.GetString(3),
-                Precio = reader.GetDouble(4)
+                IdProducto = reader.GetInt32(3),
+                Descripcion = reader.GetString(4),
+                Precio = reader.GetDouble(5)
             };
 
             pd = new PresupuestoDetalle
             {
                 TipoProducto = prod,
-                Cantidad = reader.GetInt32(1)
+                Cantidad = reader.GetInt32(2)
             };
 
             presupuesto.ListaDetalle.Add(pd);

@@ -17,25 +17,46 @@ public class ProductoController : Controller
     public IActionResult List()
     {
         List<Producto> productos = _prod.Listar();
-        return View(productos);
+        List<ProductoViewModel> productosVM = new List<ProductoViewModel>();
+
+        foreach (var item in productos)
+        {
+            ProductoViewModel productoVM = new ProductoViewModel
+            {
+                IdProducto = item.IdProducto,
+                Descripcion = item.Descripcion,
+                Precio = item.Precio,
+            };
+
+            productosVM.Add(productoVM);
+        }
+        return View(productosVM);
     }
 
     [HttpGet]
     public IActionResult Create()
     {
-        Producto producto = new Producto{IdProducto = 0};
-        return View("Form", producto);
+        ProductoViewModel productoVM = new ProductoViewModel { IdProducto = 0 };
+        return View("Form", productoVM);
     }
 
     [HttpPost]
-    public IActionResult Create(Producto producto)
+    public IActionResult Create(ProductoViewModel productoVM)
     {
         if (!ModelState.IsValid)
-            return View("Form", producto);
+        {
+            return View("Form", productoVM);
+        }
 
-        _prod.Crear(producto);
+        var nuevo = new Producto
+        {
+            Descripcion = productoVM.Descripcion,
+            Precio = productoVM.Precio
+        };
 
-        return RedirectToAction("List"); 
+        _prod.Crear(nuevo);
+
+        return RedirectToAction("List");
     }
 
     [HttpGet]
@@ -43,24 +64,39 @@ public class ProductoController : Controller
     {
         var producto = _prod.ObtenerID(id);
         if (producto == null)
+        {
             return NotFound();
-        return View("Form",producto);
+        }
+
+        ProductoViewModel productoVM = new ProductoViewModel
+        {
+            IdProducto = producto.IdProducto,
+            Descripcion = producto.Descripcion,
+            Precio = producto.Precio,
+        };
+        return View("Form", productoVM);
     }
 
     // POST: recibe el modelo modificado y lo persiste
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public IActionResult Edit(Producto producto)
+    public IActionResult Edit(ProductoViewModel productoVM)
     {
         if (!ModelState.IsValid)
-            return View(producto);
+        {
+            return View(productoVM);
+        }
 
         // Opcional: verificar que exista
-        var existing = _prod.ObtenerID(producto.IdProducto);
+        var existing = _prod.ObtenerID(productoVM.IdProducto);
         if (existing == null) return NotFound();
 
+        //Modifico obj existente
+        existing.Descripcion = productoVM.Descripcion;
+        existing.Precio = productoVM.Precio;
+
         // Actualizar campos (o usar _context.Update(producto) con cuidado)
-        _prod.Modificar(existing.IdProducto, producto);
+        _prod.Modificar(existing.IdProducto, existing);
 
         return RedirectToAction("List");
     }
@@ -68,6 +104,12 @@ public class ProductoController : Controller
     [HttpPost]
     public IActionResult Delete(int id)
     {
+        var producto = _prod.ObtenerID(id);
+        if (producto == null)
+        {
+            return NotFound();
+        }
+
         _prod.EliminarID(id);
 
         return RedirectToAction("List");

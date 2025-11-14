@@ -1,5 +1,9 @@
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
+using System.Runtime.Serialization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.VisualBasic;
 using tl2_tp8_2025_fabricioclaudio1.Models;
 
 namespace tl2_tp8_2025_fabricioclaudio1.Controllers;
@@ -17,7 +21,24 @@ public class PresupuestoController : Controller
     public IActionResult List()
     {
         List<Presupuesto> presupuestos = _prep.Listar();
-        return View(presupuestos);
+
+        List<PresupuestoViewModel> presupuestosVM = new List<PresupuestoViewModel>();
+
+        foreach (var pre in presupuestos)
+        {
+            PresupuestoViewModel presupuestoVM = new PresupuestoViewModel
+            {
+                IdPresupuesto = pre.IdPresupuesto,
+                NombreDestinario = pre.NombreDestinario,
+                ListaDetalle = pre.ListaDetalle,
+            };
+
+    
+
+            presupuestosVM.Add(presupuestoVM);
+        }
+
+        return View(presupuestosVM);
     }
 
     public IActionResult Details(int id)
@@ -28,23 +49,37 @@ public class PresupuestoController : Controller
             ViewBag.Mensaje = "Presupuesto no encontrado.";
             return View();
         }
-        return View(presupuesto);
+
+        PresupuestoViewModel presupuestoVM = new PresupuestoViewModel
+        {
+            IdPresupuesto = presupuesto.IdPresupuesto,
+            NombreDestinario = presupuesto.NombreDestinario,
+            ListaDetalle = presupuesto.ListaDetalle,
+        };
+
+        return View(presupuestoVM);
     }
 
     [HttpGet]
     public IActionResult Create()
     {
-        Presupuesto presupuesto = new Presupuesto { IdPresupuesto = 0 };
-        return View("Form", presupuesto);
+        PresupuestoViewModel presupuestoVM = new PresupuestoViewModel { IdPresupuesto = 0 };
+        return View("Form", presupuestoVM);
     }
 
     [HttpPost]
-    public IActionResult Create(Presupuesto presupuesto)
+    public IActionResult Create(PresupuestoViewModel presupuestoVM)
     {
         if (!ModelState.IsValid)
-            return View("Form", presupuesto);
+        {
+            return View("Form", presupuestoVM);
+        }
+        var nuevo = new Presupuesto
+        {
+            NombreDestinario = presupuestoVM.NombreDestinario
+        };
 
-        _prep.Crear(presupuesto);
+        _prep.Crear(nuevo);
 
         return RedirectToAction("List");
     }
@@ -54,22 +89,37 @@ public class PresupuestoController : Controller
     {
         var presupuesto = _prep.ObtenerSegunID(id);
         if (presupuesto == null)
+        {
             return NotFound();
-        return View("Form", presupuesto);
+        }
+
+        PresupuestoViewModel presupuestoVM = new PresupuestoViewModel
+        {
+            IdPresupuesto = presupuesto.IdPresupuesto,
+            NombreDestinario = presupuesto.NombreDestinario,
+            ListaDetalle = presupuesto.ListaDetalle,
+        };
+
+        return View("Form", presupuestoVM);
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public IActionResult Edit(Presupuesto presupuesto)
+    public IActionResult Edit(PresupuestoViewModel presupuestoVM)
     {
         if (!ModelState.IsValid)
-            return View(presupuesto);
-        
+        {
+            return View(presupuestoVM);
+        }
+
         // Opcional: verificar que exista
-        var existing = _prep.ObtenerSegunID(presupuesto.IdPresupuesto);
+        var existing = _prep.ObtenerSegunID(presupuestoVM.IdPresupuesto);
         if (existing == null) return NotFound();
 
-        _prep.Modificar(existing.IdPresupuesto, presupuesto);
+        //Modifico obj existente
+        existing.NombreDestinario = presupuestoVM.NombreDestinario;
+
+        _prep.Modificar(existing.IdPresupuesto, existing);
 
         return RedirectToAction("List");
     }
@@ -77,6 +127,12 @@ public class PresupuestoController : Controller
     [HttpPost]
     public IActionResult Delete(int id)
     {
+        var presupuesto = _prep.ObtenerSegunID(id);
+        if (presupuesto == null)
+        {
+            return NotFound();
+        }
+        
         _prep.EliminarID(id);
 
         return RedirectToAction("List");

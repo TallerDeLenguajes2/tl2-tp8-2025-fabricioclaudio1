@@ -1,4 +1,4 @@
-@model Producto
+@model ProductoViewModel
 
 <h2>@(Model?.IdProducto == 0 ? "Crear producto" : "Editar producto")</h2>
 
@@ -7,18 +7,21 @@
 
     <div class="mb-3">
         <input type="text" asp-for="Descripcion" class="form-control" placeholder="Descripcion"
-            aria-label="Descripcion">
+            aria-label="Descripcion" >
+        <span asp-validation-for="Descripcion" class= "text-danger"></span>
     </div>
 
     <div class="input-group mb-3">
         <span class="input-group-text">$</span>
         <input type="number" asp-for="Precio" class="form-control" aria-label="Amount (to the nearest dollar)">
+        <span asp-validation-for="Precio" class= "text-danger"></span>
     </div>
 
     <button type="submit" class="btn btn-warning">
         @(Model?.IdProducto == 0 ? "Guardar" : "Actualizar")
     </button>
 </form>
+
 
 @section Scripts {
     @{

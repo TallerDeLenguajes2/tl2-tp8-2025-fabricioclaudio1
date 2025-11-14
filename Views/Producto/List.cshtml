@@ -1,5 +1,5 @@
 ﻿@using System.Globalization
-@model List<Producto>
+@model List<ProductoViewModel>
 @{
     ViewData["Title"] = "Lista Productos";
 }
@@ -13,6 +13,7 @@
         <tr>
             <th>Nombre</th>
             <th>Precio</th>
+            <th>Acciones</th>
         </tr>
     </thead>
     <tbody>
@@ -20,8 +21,10 @@
         {
             <tr>
                 <td>@p.Descripcion</td>
-                <td>@p.Precio.ToString("C", new CultureInfo("es-AR"))
-                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                <td>@p.Precio.ToString("C", new CultureInfo("es-AR"))</td>
+                <td>
+                    <div @*class="d-grid gap-2 d-md-flex justify-content-md-end"*@>
+
                         <a class="btn btn-primary btn-sm" asp-route-id="@p.IdProducto" asp-controller="Producto"
                             asp-action="Edit" type="button">Editar</a>
 
