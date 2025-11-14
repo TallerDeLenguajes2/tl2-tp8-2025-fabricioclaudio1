@@ -1,6 +1,10 @@
 
 using Microsoft.Data.Sqlite;
-public class PresupuestoRepository
+using MVC.Interfaces;
+
+namespace MVC.Repositories;
+
+public class PresupuestoRepository : IPresupuestoRepository
 {
     readonly string cadenaConexion = "Data Source=Tienda.db";
 

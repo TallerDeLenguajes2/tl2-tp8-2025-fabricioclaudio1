@@ -5,6 +5,7 @@ using System.Runtime.Serialization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualBasic;
 using tl2_tp8_2025_fabricioclaudio1.Models;
+using MVC.Repositories;
 
 namespace tl2_tp8_2025_fabricioclaudio1.Controllers;
 

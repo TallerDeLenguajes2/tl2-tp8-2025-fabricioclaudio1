@@ -1,5 +1,8 @@
 using System.ComponentModel;
 using Microsoft.Data.Sqlite;
+using MVC.Interfaces;
+
+namespace MVC.Repositories;
 public class ProductoRepository : IProductoRepository
 {
     readonly string cadenaConexion = "Data Source=Tienda.db";

@@ -1,3 +1,5 @@
+namespace MVC.Interfaces;
+
 public interface IProductoRepository
 {
     public bool Crear(Producto producto);
